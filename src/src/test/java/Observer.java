@@ -1,14 +1,18 @@
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
+import io.reactivex.subjects.PublishSubject;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Observer {
@@ -54,6 +58,7 @@ public class Observer {
     }
 
     @Test
+    @Ignore
     public void testLambdaObserver() {
 
         // Create an Observable
@@ -63,6 +68,67 @@ public class Observer {
                 .map(n -> (int) n / 10)
                 .doOnNext(this::printValue)     // Method reference as an input of the function
                 .doOnComplete(() -> System.out.println("The Stream has completed."))
+                .subscribe();
+    }
+
+    @Test
+    public void testMap() {
+
+        Function<Integer, Integer> powTwo = n -> n * n;
+        Function<List<Integer>, int[]> copy = ints -> {
+            int[] newTab = new int[ints.size()];
+            int index = 0;
+            for(int n : ints) {
+                newTab[index] = n;
+                index++;
+            }
+
+            return newTab;
+        };
+
+        Function<int[], int[]> mapPow = new Function<int[], int[]>() {
+            @Override
+            public int[] apply(int[] ints) throws Exception {
+                int[] newTab = new int[ints.length];
+                int index = 0;
+                for(int n : ints) {
+                    newTab[index] = n * n;
+                    index++;
+                }
+
+                return newTab;
+            }
+        };
+
+        Consumer<List<Integer>> printArray = ints -> {
+            for(int n : ints) {
+                System.out.println(n);
+            }
+        };
+
+        // Create List
+        List<Integer> hundred = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            hundred.add(i);
+        }
+
+        Observable
+                .fromArray(hundred)
+                .map(copy)
+                .flatMap((Function<int[], ObservableSource<List<Integer>>>) ints -> {
+                    List<Integer> result = new ArrayList<>();
+
+                    for(int n : ints) {
+                        result.add(n);
+                        result.add(n * 1000);
+                    }
+                    return Observable.just(result);
+                })
+                // convert observable of array to emit one item at a time
+                .flatMap(Observable::fromIterable)
+                .map(n -> n * n)
+                .doOnNext(System.out::println)
+                .doOnError(System.out::println)
                 .subscribe();
     }
 
