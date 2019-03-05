@@ -127,6 +127,8 @@ public class Observer {
                 // convert observable of array to emit one item at a time
                 .flatMap(Observable::fromIterable)
                 .map(n -> n * n)
+                .filter(n -> n  < 100)
+                .take(5)
                 .doOnNext(System.out::println)
                 .doOnError(System.out::println)
                 .subscribe();
