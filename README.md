@@ -9,6 +9,8 @@ Test of the frameworks RxJava 2
 - _Observer_ (or Subscriber) : The object that listen to the event. The function (often callback) are observers. Subscribers consume items from Obserable.
 - _FRP_ : Programming with reactive systems combined with functional operators.
 
+Backpressure (non-formal definition) : strategies thaat allows reducing the amount of datas be consumed to the consumer emitted by the producter. (see : https://blog.octo.com/les-strategies-de-gestion-de-pression-partie-i)
+
 ## Difference
 In 1.x the difference between Observer and Subscriber is that a Subscriber allows to subscribe and unsubscribe, however an Observer only allows to subscribe.
 
