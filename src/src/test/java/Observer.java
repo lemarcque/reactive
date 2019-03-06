@@ -1,6 +1,8 @@
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
+import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
@@ -12,6 +14,8 @@ import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -72,6 +76,7 @@ public class Observer {
     }
 
     @Test
+    @Ignore
     public void testMap() {
 
         Function<Integer, Integer> powTwo = n -> n * n;
@@ -133,6 +138,32 @@ public class Observer {
                 .doOnError(System.out::println)
                 .subscribe();
     }
+
+    @Test
+    public void testSingle() {
+        // Create a Single stream
+        Single
+                .just("Pomme")
+                .doOnError((e) -> System.out.println("Process terminated with ERROR : " + e.getMessage()))
+                .doOnSuccess(s -> System.out.println(("Print single : " + s)))
+                .doOnTerminate(() -> System.out.println("Process terminated"))
+                .subscribe();
+        
+    }
+
+    @Test
+    public void testIterator() {
+        List<Integer> numbers = Arrays.asList(
+                1, 2, 3, 4, 5, 6, 7, 8, 9
+        );
+
+
+        Iterator<Integer> iterator = numbers.iterator();
+        while(iterator.hasNext()) {
+            System.out.println("Iterator : " + iterator.next());
+        }
+    }
+
 
     // Function (Method reference that replace lambda function)
     private void printValue(int n) {
