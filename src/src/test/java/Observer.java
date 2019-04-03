@@ -7,6 +7,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.subjects.PublishSubject;
+import mathematics.ArithmeticMean;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 public class Observer {
 
@@ -140,6 +142,7 @@ public class Observer {
     }
 
     @Test
+    @Ignore
     public void testSingle() {
         // Create a Single stream
         Single
@@ -148,7 +151,6 @@ public class Observer {
                 .doOnSuccess(s -> System.out.println(("Print single : " + s)))
                 .doOnTerminate(() -> System.out.println("Process terminated"))
                 .subscribe();
-        
     }
 
     @Test
@@ -162,6 +164,24 @@ public class Observer {
         while(iterator.hasNext()) {
             System.out.println("Iterator : " + iterator.next());
         }
+    }
+
+    private Single<String> returnSingle() {
+        return Single
+                .just("Amour");
+    }
+
+    @Test
+    public void testChainObservable() {
+        returnSingle()
+                .doOnSuccess(System.out::println)
+                .subscribe();
+    }
+
+    public void testMath() {
+        // Arithmetic mean
+       Observable
+                .fromArray(10, 20, 30).subscribe();
     }
 
 
